@@ -2,14 +2,15 @@
 
 sudo -s
 
-nginx_path=/usr/bin/nginx
+# Install Nginx with RTMP module
+nginx_path=/usr/sbin/nginx
 if [ ! -e $nginx_path ]; then
     # Change root password
     echo root:root | /usr/sbin/chpasswd
 
     add-apt-repository ppa:mc3man/trusty-media
     apt-get update
-    apt-get install build-essential libpcre3 libpcre3-dev openssl libssl-dev unzip libaio1 ffmpeg -y
+    apt-get install -y build-essential libpcre3 libpcre3-dev openssl libssl-dev unzip libaio1 ffmpeg
     wget http://nginx.org/download/nginx-1.9.5.tar.gz
     wget https://github.com/arut/nginx-rtmp-module/archive/master.zip
     tar -zxvf nginx-1.9.5.tar.gz
@@ -27,7 +28,7 @@ if [ ! -e $nginx_path ]; then
     # Remove folder used to build Nginx
     rm -rf nginx-1.9.5 nginx-rtmp-module-master
 
-    # Create a symlink for Nginx
+    # Create a symlink to us nginx as a command
     ln -fs /usr/local/nginx/sbin/nginx $nginx_path
 
     # Create symlinks for Nginx config files
@@ -37,14 +38,28 @@ if [ ! -e $nginx_path ]; then
 
     # Create new aliases
     echo "alias gonginx='cd /usr/local/nginx'" >> ~/.bashrc
+
+    # Copy Nginx scripts
+    cp -rf /vagrant/nginx/script/ /usr/local/nginx
+
+    # Copy nginx script to launch Nginx at startup
+    cp -f /vagrant/nginx/init/nginx /etc/init.d/
+    update-rc.d nginx defaults
 fi
 
-# Stop Nginx if it's running
-if [ -e /usr/local/nginx/logs/nginx.pid ]; then
-    echo "Stop Nginx server"
-    nginx -s stop
-fi
+# Install Node JS
+curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
+apt-get install -y build-essential nodejs 
 
-# Launch Nginx
-nginx
-echo "Nginx is ready to use"
+# Install forever
+npm install forever -g
+
+# Copy the Nginx config file watcher script
+cp -rf /vagrant/nodejs ~
+
+# Copy nginx-conf-watcher to watch Nginx config file at startup
+cp -f /vagrant/nginx/init/nginx-conf-watcher /etc/init.d/
+update-rc.d nginx-conf-watcher defaults
+
+service nginx start
+service nginx-conf-watcher start
