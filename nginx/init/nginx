@@ -1,0 +1,18 @@
+#!/bin/bash
+
+USER=root
+
+case "$1" in
+        start)
+            echo "Start Nginx service"
+            sudo -u ${USER} /usr/local/nginx/script/restart.sh
+            ;;
+        stop)
+            echo "Stop Nginx service"
+            sudo -u ${USER} nginx -s stop
+            ;;
+        *)
+            echo "Usage: /etc/init.d/nginx {start|stop|}" > /dev/stderr
+            exit 1
+        ;;
+esac
