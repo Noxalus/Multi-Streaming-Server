@@ -34,6 +34,9 @@ if [ ! -e $nginx_path ]; then
     rm -rf /usr/local/nginx/html
     ln -fs /vagrant/nginx/html /usr/local/nginx/
     ln -fs /vagrant/nginx/conf/nginx.conf /usr/local/nginx/conf
+
+    # Create new aliases
+    echo "alias gonginx='cd /usr/local/nginx'" >> ~/.bashrc
 fi
 
 # Stop Nginx if it's running
