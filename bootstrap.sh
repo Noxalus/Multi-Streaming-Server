@@ -4,6 +4,9 @@ sudo -s
 
 nginx_path=/usr/bin/nginx
 if [ ! -e $nginx_path ]; then
+    # Change root password
+    echo root:root | /usr/sbin/chpasswd
+
     add-apt-repository ppa:mc3man/trusty-media
     apt-get update
     apt-get install build-essential libpcre3 libpcre3-dev openssl libssl-dev unzip libaio1 ffmpeg -y
