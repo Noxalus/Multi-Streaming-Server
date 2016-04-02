@@ -24,16 +24,14 @@ if [ ! -e $nginx_path ]; then
     # Remove folder used to build Nginx
     rm -rf nginx-1.9.5 nginx-rtmp-module-master
 
-
-    # Create a symlink for nginx
+    # Create a symlink for Nginx
     ln -fs /usr/local/nginx/sbin/nginx $nginx_path
+
+    # Create symlinks for Nginx config files
+    rm -rf /usr/local/nginx/html
+    ln -fs /vagrant/nginx/html /usr/local/nginx/
+    ln -fs /vagrant/nginx/conf/nginx.conf /usr/local/nginx/conf
 fi
-
-# Copy nginx conf files
-cp -R /vagrant/nginx/html /usr/local/nginx
-cp /vagrant/nginx/conf/nginx.conf /usr/local/nginx/conf
-
-# TODO: Launch a script to replace variables in Nginx conf file
 
 # Stop Nginx if it's running
 if [ -e /usr/local/nginx/logs/nginx.pid ]; then
