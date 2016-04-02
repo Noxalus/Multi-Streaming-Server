@@ -1,0 +1,21 @@
+#!/bin/bash
+
+USER=root
+
+case "$1" in
+        start)
+            echo "Start Nginx config file monitoring"
+            sudo -u ${USER} forever start ~/nodejs/server.js
+            ;;
+        status)
+            sudo -u ${USER} forever list | grep server.js | grep -v STOPPED
+            ;;
+        stop)
+            echo "Stop Nginx config file monitoring"
+            sudo -u ${USER} forever stop ~/nodejs/server.js
+            ;;
+        *)
+            echo "Usage: /etc/init.d/nginx {start|stop|status}" > /dev/stderr
+            exit 1
+        ;;
+esac
