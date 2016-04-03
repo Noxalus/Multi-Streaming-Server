@@ -37,7 +37,7 @@ if [ ! -e $nginx_path ]; then
     ln -fs /vagrant/nginx/conf/nginx.conf /usr/local/nginx/conf
 
     # Create new aliases
-    echo "alias gonginx='cd /usr/local/nginx'" >> ~/.bashrc
+    echo "alias gonginx='cd /usr/local/nginx'" >> /home/vagrant/.bashrc
 
     # Copy Nginx scripts
     cp -rf /vagrant/nginx/script/ /usr/local/nginx
@@ -49,17 +49,31 @@ fi
 
 # Install Node JS
 curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
-apt-get install -y build-essential nodejs 
+apt-get install -y build-essential nodejs git
 
 # Install forever
 npm install forever -g
 
 # Copy the Nginx config file watcher script
-cp -rf /vagrant/nodejs ~
+cp -rf /vagrant/nodejs/nginx-conf-watcher /home/vagrant
 
 # Copy nginx-conf-watcher to watch Nginx config file at startup
 cp -f /vagrant/nginx/init/nginx-conf-watcher /etc/init.d/
 update-rc.d nginx-conf-watcher defaults
 
+# Clone live stream chat retriever project
+cd /home/vagrant
+git clone https://github.com/Noxalus/live-stream-chat-retriever
+cd live-stream-chat-retriever
+npm install
+
+# Copy live stream chat retriever config file
+cp /vagrant/nodejs/live-stream-chat-retriever/config.json .
+
+# Launch live-stream-chat-retriever at startup
+cp -f /vagrant/nginx/init/live-stream-chat-retriever /etc/init.d/
+update-rc.d live-stream-chat-retriever defaults
+
 service nginx start
 service nginx-conf-watcher start
+service live-stream-chat-retriever start
