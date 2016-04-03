@@ -12,7 +12,7 @@ case "$1" in
             sudo -u ${USER} nginx -s stop
             ;;
         *)
-            echo "Usage: /etc/init.d/nginx {start|stop|}" > /dev/stderr
+            echo "Usage: /etc/init.d/nginx {start|stop}" > /dev/stderr
             exit 1
         ;;
 esac
