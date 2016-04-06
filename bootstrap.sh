@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
 
-sudo -s
-
 # Install Nginx with RTMP module
 nginx_path=/usr/sbin/nginx
 if [ ! -e $nginx_path ]; then
-    # Change root password
-    echo root:root | /usr/sbin/chpasswd
-
     add-apt-repository ppa:mc3man/trusty-media
     apt-get update
     apt-get install -y build-essential libpcre3 libpcre3-dev openssl libssl-dev unzip libaio1 ffmpeg
@@ -35,6 +30,8 @@ if [ ! -e $nginx_path ]; then
     rm -rf /usr/local/nginx/html
     ln -fs /vagrant/nginx/html /usr/local/nginx/
     ln -fs /vagrant/nginx/conf/nginx.conf /usr/local/nginx/conf
+
+    chmod 755 /vagrant/nginx/html/*
 
     # Create new aliases
     echo "alias gonginx='cd /usr/local/nginx'" >> /home/vagrant/.bashrc
