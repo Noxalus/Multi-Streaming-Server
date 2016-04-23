@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
 
-sudo -s
-
 # Install Nginx with RTMP module
 nginx_path=/usr/sbin/nginx
 if [ ! -e $nginx_path ]; then
-    # Change root password
-    echo root:root | /usr/sbin/chpasswd
-
     add-apt-repository ppa:mc3man/trusty-media
     apt-get update
     apt-get install -y build-essential libpcre3 libpcre3-dev openssl libssl-dev unzip libaio1 ffmpeg
@@ -36,6 +31,8 @@ if [ ! -e $nginx_path ]; then
     ln -fs /vagrant/nginx/html /usr/local/nginx/
     ln -fs /vagrant/nginx/conf/nginx.conf /usr/local/nginx/conf
 
+    chmod 755 /vagrant/nginx/html/*
+
     # Create new aliases
     echo "alias gonginx='cd /usr/local/nginx'" >> ~/.bashrc
 
@@ -44,21 +41,30 @@ if [ ! -e $nginx_path ]; then
 
     # Copy nginx script to launch Nginx at startup
     cp -f /vagrant/nginx/init/nginx /etc/init.d/
+    
+    # Make sure that the script use Unix line endings
+    sed -i 's/\r//' /etc/init.d/nginx
+    sed -i 's/\r//' /usr/local/nginx/script/restart.sh
+
     update-rc.d nginx defaults
 fi
 
 # Install Node JS
 curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
-apt-get install -y build-essential nodejs 
+apt-get install -y build-essential nodejs git
 
 # Install forever
 npm install forever -g
 
 # Copy the Nginx config file watcher script
-cp -rf /vagrant/nodejs ~
+cp -rf /vagrant/nodejs/nginx-conf-watcher /home/vagrant
 
 # Copy nginx-conf-watcher to watch Nginx config file at startup
 cp -f /vagrant/nginx/init/nginx-conf-watcher /etc/init.d/
+
+# Make sure that the script use Unix line endings
+sed -i 's/\r//' /etc/init.d/nginx-conf-watcher
+    
 update-rc.d nginx-conf-watcher defaults
 
 service nginx start
