@@ -1,4 +1,6 @@
 # Multi Streaming Server
+
+[![Join the chat at https://gitter.im/Noxalus/Multi-Streaming-Server](https://badges.gitter.im/Noxalus/Multi-Streaming-Server.svg)](https://gitter.im/Noxalus/Multi-Streaming-Server?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A Nginx server with RTMP module to send video streaming to multiple services.
 
 If you have an optical fiber connection, you might want to send your live streams to multiple services to reach a wider audience. 
