@@ -11,7 +11,7 @@ Please note that you also can encode your stream on the fly. If you want to stre
 
 ## Prerequisites
 
-To work on Windows, this project needs to run a Unix VM (*exec* command doesn't work on Windows), but this VM is automatically setup using [Vagrant](https://www.vagrantup.com/).
+To work on Windows, this project needs to run a Unix virtual machine (*exec* command doesn't work on Windows) using [VirtualBox](https://www.virtualbox.org/wiki/Downloads). This VM is automatically setup using [Vagrant](https://www.vagrantup.com/).
 
 You also need a software to stream to the Nginx server. I personally used [Open Broadcast Software](https://obsproject.com/).
 
