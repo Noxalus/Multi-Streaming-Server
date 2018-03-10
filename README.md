@@ -28,3 +28,9 @@ vagrant up
 If you see the message "*Nginx is ready to use*", you can start to stream. With OBS, change the RTMP URL to **rtmp://192.168.42.42:1935/live**, you don't need to enter a stream key.
 
 To check that the stream is properly received and sent to each services, you can browse to http://192.168.42.42:8080/stat.
+
+## FAQ
+
+- [How to install on a dedicated server](https://github.com/Noxalus/Multi-Streaming-Server/wiki/How-to-install-on-a-dedicated-server)
+- [How to display all services' chat messages in the same place](https://github.com/Noxalus/Multi-Streaming-Server/wiki/How-to-display-all-services'-chat-messages-in-the-same-place)
+- [How to handle new services](https://github.com/Noxalus/Multi-Streaming-Server/wiki/How-to-handle-new-services)
