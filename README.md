@@ -17,7 +17,7 @@ You also need a software to stream to the Nginx server. I personally used [Open 
 
 ## Usage
 
-Rename the file **nginx.template.conf** (located to *nginx/conf/*) into **nginx.conf** and change its content with your specific data. For instance, you need to change **{{ youtube_key }}** by your Youtube stream key.
+Rename the file **nginx.template.conf** (located into *nginx/conf/*) to **nginx.conf** and change its content with your specific data. For instance, you need to change **{{ youtube_key }}** by your Youtube stream key.
 
 Then, launch this command at the root folder of this project (where there is the *Vagrant* file):
 
