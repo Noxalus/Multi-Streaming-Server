@@ -5,14 +5,14 @@ USER=root
 case "$1" in
         start)
             echo "Start Live Stream Chat Retriever"
-            cd /home/vagrant/live-stream-chat-retriever && sudo -u ${USER} forever start server.js
+            cd /usr/local/live-stream-chat-retriever && sudo -u ${USER} forever start server.js
             ;;
         status)
             sudo -u ${USER} forever list | grep server.js | grep -v STOPPED
             ;;
         stop)
             echo "Stop Live Stream Chat Retriever"
-            cd /home/vagrant/live-stream-chat-retriever && sudo -u ${USER} forever stop server.js
+            cd /usr/local/live-stream-chat-retriever && sudo -u ${USER} forever stop server.js
             ;;
         *)
             echo "Usage: /etc/init.d/live-stream-chat-retriever {start|stop|status}" > /dev/stderr
