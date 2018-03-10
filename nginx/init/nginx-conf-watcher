@@ -5,14 +5,14 @@ USER=root
 case "$1" in
         start)
             echo "Start Nginx config file monitoring"
-            cd /home/vagrant/nginx-conf-watcher/ && sudo -u ${USER} forever start server.js
+            cd /usr/local/nginx/conf-watcher && sudo -u ${USER} forever start server.js
             ;;
         status)
             sudo -u ${USER} forever list | grep server.js | grep -v STOPPED
             ;;
         stop)
             echo "Stop Nginx config file monitoring"
-            cd /home/vagrant/nginx-conf-watcher/ && sudo -u ${USER} forever stop server.js
+            cd /usr/local/nginx/conf-watcher && sudo -u ${USER} forever stop server.js
             ;;
         *)
             echo "Usage: /etc/init.d/nginx-conf-watcher {start|stop|status}" > /dev/stderr
