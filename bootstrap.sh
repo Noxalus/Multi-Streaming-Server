@@ -40,6 +40,7 @@ if [ ! -e $NGINX_PATH ]; then
     ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module-${NGINX_RTMP_MODULE_VERSION}
     make
     make install
+	cd ..
 
     # Remove downloaded archives
     rm v${NGINX_RTMP_MODULE_VERSION}.zip nginx-${NGINX_VERSION}.tar.gz
@@ -75,9 +76,8 @@ if [ ! -e $NGINX_PATH ]; then
 fi
 
 if [ ! -e $NGINX_CONFIG_WATCHER_PATH ]; then
-	# Install Node JS
-	curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
-	apt-get install -y build-essential nodejs git
+	# Install Node JS and NPM
+	apt-get install -y nodejs npm
 
 	# Install forever
 	npm install forever -g
