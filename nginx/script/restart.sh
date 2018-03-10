@@ -16,7 +16,7 @@ if [[ $? != 0 ]]; then
 	exit 1; 
 fi
 
-# TODO: Make sure Nginx is running or display the error message
+# Make sure Nginx is running or display the error message
 if [ -e /usr/local/nginx/logs/nginx.pid ]; then
 	echo "Nginx is ready to use."
 else
