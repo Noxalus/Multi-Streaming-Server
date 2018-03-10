@@ -1,71 +1,98 @@
 #!/usr/bin/env bash
 
-# Install Nginx with RTMP module
-nginx_path=/usr/sbin/nginx
-if [ ! -e $nginx_path ]; then
+PROJECT_PATH="${PROJECT_PATH:-.}"
+NGINX_VERSION=1.9.5
+NGINX_RTMP_MODULE_VERSION=1.2.1
+NGINX_PATH=/usr/sbin/nginx								# Make sure to change the init file too		
+NGINX_CONFIG_WATCHER_PATH=/usr/local/nginx/conf-watcher # Make sure to change the init file too
+
+echo "Project path: ${PROJECT_PATH}"
+echo "Nginx version: ${NGINX_VERSION}" 
+echo "Nginx RTPM module version: ${NGINX_RTMP_MODULE_VERSION}" 
+echo "Nginx path: ${NGINX_PATH}"
+
+# Check that Nginx is not already installed
+if [ ! -e $NGINX_PATH ]; then
+	echo "Nginx server doesn't exist"
+
+	# Add an APT repository to install FFMpeg (used to encode video stream)
     add-apt-repository ppa:mc3man/trusty-media
-    apt-get update
+    
+	# Make sure the new APT repository is taken into account
+	apt-get update
+	
+	# Install requirements
     apt-get install -y build-essential libpcre3 libpcre3-dev openssl libssl-dev unzip libaio1 ffmpeg
-    wget http://nginx.org/download/nginx-1.9.5.tar.gz
-    wget https://github.com/arut/nginx-rtmp-module/archive/master.zip
-    tar -zxvf nginx-1.9.5.tar.gz
-    unzip master.zip
-    cd nginx-1.9.5
-    ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module-master
+	
+	# Download Nginx server
+    wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
+	
+	# Unzip the downloaded tarball
+    tar -zxvf nginx-${NGINX_VERSION}.tar.gz
+	
+	# Download Nginx's RTMP module used for live broadcasting
+    wget https://github.com/arut/nginx-rtmp-module/archive/v${NGINX_RTMP_MODULE_VERSION}.zip
+	# Unzip the zip file
+    unzip v${NGINX_RTMP_MODULE_VERSION}.zip
+	
+	# Build Nginx with the RTMP module included
+    cd nginx-${NGINX_VERSION}
+    ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module-${NGINX_RTMP_MODULE_VERSION}
     make
     make install
 
-    cd /home/vagrant    
-
     # Remove downloaded archives
-    rm master.zip nginx-1.9.5.tar.gz
+    rm v${NGINX_RTMP_MODULE_VERSION}.zip nginx-${NGINX_VERSION}.tar.gz
 
     # Remove folder used to build Nginx
-    rm -rf nginx-1.9.5 nginx-rtmp-module-master
+    rm -rf nginx-${NGINX_VERSION} nginx-rtmp-module-master
 
-    # Create a symlink to us nginx as a command
-    ln -fs /usr/local/nginx/sbin/nginx $nginx_path
+    # Create a symlink to use Nginx as a command
+    ln -fs /usr/local/nginx/sbin/nginx $NGINX_PATH
 
     # Create symlinks for Nginx config files
     rm -rf /usr/local/nginx/html
-    ln -fs /vagrant/nginx/html /usr/local/nginx/
-    ln -fs /vagrant/nginx/conf/nginx.conf /usr/local/nginx/conf
+    ln -fs ${PROJECT_PATH}/nginx/html /usr/local/nginx/
+    ln -fs ${PROJECT_PATH}/nginx/conf/nginx.conf /usr/local/nginx/conf
 
-    chmod 755 /vagrant/nginx/html/*
+	# Make sure Nginx HTML files will be readable online
+    chmod 755 ${PROJECT_PATH}/nginx/html/*
 
     # Create new aliases
     echo "alias gonginx='cd /usr/local/nginx'" >> ~/.bashrc
 
     # Copy Nginx scripts
-    cp -rf /vagrant/nginx/script/ /usr/local/nginx
+    cp -rf ${PROJECT_PATH}/nginx/script/ /usr/local/nginx
 
-    # Copy nginx script to launch Nginx at startup
-    cp -f /vagrant/nginx/init/nginx /etc/init.d/
+    # Copy Nginx script to launch Nginx at startup
+    cp -f ${PROJECT_PATH}/nginx/init/nginx /etc/init.d/
     
-    # Make sure that the script use Unix line endings
+    # Make sure that the script uses Unix line endings
     sed -i 's/\r//' /etc/init.d/nginx
     sed -i 's/\r//' /usr/local/nginx/script/restart.sh
 
     update-rc.d nginx defaults
 fi
 
-# Install Node JS
-curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
-apt-get install -y build-essential nodejs git
+if [ ! -e $NGINX_CONFIG_WATCHER_PATH ]; then
+	# Install Node JS
+	curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
+	apt-get install -y build-essential nodejs git
 
-# Install forever
-npm install forever -g
+	# Install forever
+	npm install forever -g
 
-# Copy the Nginx config file watcher script
-cp -rf /vagrant/nodejs/nginx-conf-watcher /home/vagrant
+	# Copy the Nginx config file watcher script
+	cp -rf ${PROJECT_PATH}/nodejs/nginx-conf-watcher ${NGINX_CONFIG_WATCHER_PATH}
 
-# Copy nginx-conf-watcher to watch Nginx config file at startup
-cp -f /vagrant/nginx/init/nginx-conf-watcher /etc/init.d/
+	# Copy nginx-conf-watcher to watch Nginx config file at startup
+	cp -f ${PROJECT_PATH}/nginx/init/nginx-conf-watcher /etc/init.d/
 
-# Make sure that the script use Unix line endings
-sed -i 's/\r//' /etc/init.d/nginx-conf-watcher
-    
-update-rc.d nginx-conf-watcher defaults
+	# Make sure that the script use Unix line endings
+	sed -i 's/\r//' /etc/init.d/nginx-conf-watcher
+		
+	update-rc.d nginx-conf-watcher defaults
+fi
 
 service nginx start
 service nginx-conf-watcher start
