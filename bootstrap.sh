@@ -87,8 +87,8 @@ if [ ! -e $NGINX_CONFIG_WATCHER_PATH ]; then
 
     # Install Node JS and NPM
     curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-	apt-get install -y nodejs
-
+	apt-get install -y nodejs nodejs-legacy npm
+	
     # Install forever
     npm install forever -g
 
