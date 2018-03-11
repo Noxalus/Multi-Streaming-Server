@@ -107,5 +107,5 @@ if [ ! -e $NGINX_CONFIG_WATCHER_PATH ]; then
     update-rc.d nginx-conf-watcher defaults
 fi
 
-service nginx start
-service nginx-conf-watcher start
+/etc/init.d/nginx start
+/etc/init.d/nginx-conf-watcher start
